@@ -27,13 +27,13 @@ poethepoet = "^0.33.1"
 [tool.poe.env]
 PYTHONPATH             = "src"
 DC                     = "docker compose -f docker-compose.dev.yml"
-DC_PROD                = "docker compose-f docker-compose.prod.yml"
+DC_PROD                = "docker compose -f docker-compose.prod.yml"
 EXEC                   = "docker exec -it"
 
 [tool.poe.tasks]
 test             = "pytest"
 start            = "uvicorn --factory main.web_api.app:create_app --reload --port 8080 --host 0.0.0.0"
-start_prod       = "uvicorn --factory main.web_api.app:create_app --port 8080 --host 0.0.0.0 --workers 4"
+start_prod       = "uvicorn --factory main.web_api.app:create_app --port 8080 --host 0.0.0.0 --workers 8"
 makemigrations   = "alembic revision --autogenerate"
 migrate          = "alembic upgrade head"
 up               = "$DC up --build"
