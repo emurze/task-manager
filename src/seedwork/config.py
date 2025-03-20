@@ -22,11 +22,12 @@ class LoggingConfig(BaseModel):
     log_format: str = LOG_DEFAULT_FORMAT
 
 
-class DatabaseConfig(BaseModel):  # TODO: pg_bouncer
-    pool_size: int = 20
-    pool_max_overflow: int = 0
+class DatabaseConfig(BaseModel):
     echo: bool = False
-    dsn: str = "postgresql+asyncpg://postgres:password@db:5432/postgres"
+    hostname: ClassVar[str] = "pgbouncer"
+    dsn: str = (
+        f"postgresql+asyncpg://postgres:password@{hostname}:6432/postgres"
+    )
     naming_convention: dict[str, str] = {
         "ix": "ix_%(column_0_label)s",
         "uq": "uq_%(table_name)s_%(column_0_N_name)s",
@@ -34,7 +35,6 @@ class DatabaseConfig(BaseModel):  # TODO: pg_bouncer
         "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
         "pk": "pk_%(table_name)s",
     }
-    hostname: ClassVar[str] = "db"
 
     def get_db_dsn_for_environment(self) -> str:
         if not os.getenv(IS_DOCKER_VARIABLE):
