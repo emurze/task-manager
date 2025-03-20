@@ -40,10 +40,25 @@ services:
       POSTGRES_PASSWORD: password
     networks:
       - backend
-    ports:
-      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./config/postgres/postgresql.conf:/usr/share/postgresql/postgresql.conf
+    command: -c 'config_file=/usr/share/postgresql/postgresql.conf'
+    restart: unless-stopped
+
+  pgbouncer:
+    image: edoburu/pgbouncer
+    networks:
+      - backend
+    ports:
+      - "6432:6432"
+    environment:
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASSWORD: password
+    volumes:
+      - ./config/pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
+      - ./config/pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
     restart: unless-stopped
 
 volumes:

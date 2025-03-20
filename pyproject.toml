@@ -32,6 +32,7 @@ EXEC                   = "docker exec -it"
 
 [tool.poe.tasks]
 test             = "pytest"
+test_load        = "locust -f tests/tasks/load/test_get_tasks.py --host http://0.0.0.0"
 start            = "uvicorn --factory main.web_api.app:create_app --reload --port 8080 --host 0.0.0.0"
 start_prod       = "uvicorn --factory main.web_api.app:create_app --port 8080 --host 0.0.0.0 --workers 8"
 makemigrations   = "alembic revision --autogenerate"
