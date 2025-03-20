@@ -25,19 +25,8 @@ class Base(DeclarativeBase):
 
 
 class DatabaseAdapter:
-    def __init__(
-        self,
-        dsn: str,
-        echo: bool,
-        pool_size: int,
-        pool_max_overflow: int,
-    ) -> None:
-        self.engine = create_async_engine(
-            dsn,
-            echo=echo,
-            pool_size=pool_size,
-            max_overflow=pool_max_overflow,
-        )
+    def __init__(self, dsn: str, echo: bool) -> None:
+        self.engine = create_async_engine(dsn, echo=echo)
         self.session_factory = async_sessionmaker(
             self.engine,
             expire_on_commit=False,
@@ -53,8 +42,6 @@ def get_db_adapter(config: Config) -> DatabaseAdapter:
     return DatabaseAdapter(
         dsn=config.db.get_db_dsn_for_environment(),
         echo=config.db.echo,
-        pool_size=config.db.pool_size,
-        pool_max_overflow=config.db.pool_max_overflow,
     )
 
 
