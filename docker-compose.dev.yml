@@ -1,23 +1,23 @@
 services:
-  api:
-    build: .
-    image: 'api:v1'
-    networks:
-      - backend
-    volumes:
-      - ./src:/service/src
-    restart: unless-stopped
-
-  web_server:
-    image: nginx
-    networks:
-      - backend
-    volumes:
-      - ./config/nginx/default.conf:/etc/nginx/nginx.conf
-    ports:
-      - '80:80'
-      - '443:443'
-    restart: unless-stopped
+#  api:
+#    build: .
+#    image: 'api:v1'
+#    networks:
+#      - backend
+#    volumes:
+#      - ./src:/service/src
+#    restart: unless-stopped
+#
+#  web_server:
+#    image: nginx
+#    networks:
+#      - backend
+#    volumes:
+#      - ./config/nginx/default.conf:/etc/nginx/nginx.conf
+#    ports:
+#      - '80:80'
+#      - '443:443'
+#    restart: unless-stopped
 
   db:
     image: postgres:16
@@ -27,8 +27,17 @@ services:
       - backend
     ports:
       - '5432:5432'
+    restart: unless-stopped
+
+  pgbouncer:
+    image: edoburu/pgbouncer
+    networks:
+      - backend
+    ports:
+      - "6432:6432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./config/pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
+      - ./config/pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
     restart: unless-stopped
 
 volumes:
